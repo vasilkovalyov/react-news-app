@@ -7,7 +7,3 @@ test('render NewsCard', () => {
   render(<NewsCard {...model} />);
 });
 
-test('test example', () => {
-  const a: number = 5;
-  expect(a).toBe(5);
-});
