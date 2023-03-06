@@ -3,29 +3,10 @@ import cn from 'classnames';
 
 import {
   FilterCategoriesProps,
-  FilterCategoryType,
   FilterCategoryWithCountType,
 } from './FilterCategoryGroup.type';
-import { DynamicObjectType } from '../../utils/types';
 
-function objectToArray(
-  obj: { [key: string]: string },
-  category: string
-): FilterCategoryType[] | [] {
-  if (!Object.keys(obj).length) return [];
-
-  const array: FilterCategoryType[] = [];
-  for (const key in obj) {
-    const item = {
-      _id: obj[key],
-      title: key,
-      category: category,
-    };
-    array.push(item);
-  }
-
-  return array;
-}
+import { useFilterCategoryGroup } from './useFilterCategoryGroup';
 
 function FilterCategoryGroup({
   categories,
@@ -36,42 +17,29 @@ function FilterCategoryGroup({
   onChangeRemove,
 }: FilterCategoriesProps) {
   const [show, setShow] = useState<boolean>(isOpen);
-  const [selectedCategoriesMap, setSelectedCategoriesMap] =
-    useState<DynamicObjectType>(selectedCategories || {});
+  const [selected, setSelected, selectedAdd, selectedRemove] =
+    useFilterCategoryGroup(categoryName, selectedCategories);
 
   useEffect(() => {
-    setSelectedCategoriesMap(selectedCategories || {});
+    setSelected(selectedCategories || {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedCategories]);
 
   function onHandleCategory(category: FilterCategoryWithCountType) {
-    const selectedCategory: FilterCategoryType = {
-      _id: category._id,
-      title: category.title,
-      category: categoryName,
-    };
-
-    if (selectedCategoriesMap[category.title]) {
-      const tempState = { ...selectedCategoriesMap };
-      delete tempState[category.title];
-      setSelectedCategoriesMap(tempState);
-      onChangeRemove && onChangeRemove(selectedCategory);
-    } else {
-      const state = {
-        ...selectedCategoriesMap,
-        [category.title]: category._id,
-      };
-      setSelectedCategoriesMap(state);
-      onChangeAdd && onChangeAdd(objectToArray(state, categoryName));
+    if (!selected[category.title]) {
+      onChangeAdd && onChangeAdd(selectedAdd(category));
+      return;
     }
+    onChangeRemove && onChangeRemove(selectedRemove(category));
   }
 
   return (
     <div className="filter">
       <button className="filter__title" onClick={() => setShow(!show)}>
         <span className="filter__title-text">{categoryName}</span>
-        {Object.keys(selectedCategoriesMap).length ? (
+        {Object.keys(selected).length ? (
           <span className="filter__title-count" style={{ margin: '0 4px' }}>
-            ({Object.keys(selectedCategoriesMap).length})
+            ({Object.keys(selected).length})
           </span>
         ) : null}
         <span className="filter__title-icon">
@@ -114,7 +82,7 @@ function FilterCategoryGroup({
           {categories.map((category) => (
             <button
               className={cn('filter-option', {
-                active: selectedCategoriesMap[category.title],
+                active: selected[category.title],
               })}
               key={category._id}
               onClick={() => onHandleCategory(category)}

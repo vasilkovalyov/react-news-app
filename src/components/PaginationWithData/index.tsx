@@ -17,6 +17,7 @@ function PaginationWithData<T>({
 
   useEffect(() => {
     setViewedPosts(currentPage * PageSize);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   const newsData = useMemo(() => {
@@ -24,6 +25,7 @@ function PaginationWithData<T>({
     const lastPageIndex = firstPageIndex + PageSize;
     const posts = data.length ? data.slice(firstPageIndex, lastPageIndex) : [];
     return posts;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, currentPage]);
 
   return (

@@ -24,10 +24,3 @@ export type FilterCategoryWithCountType = FilterCategoryProps & {
 export type FilterCategoryType = FilterCategoryProps & {
   category: string;
 };
-
-export interface CategoryResponseProps {
-  _id: string;
-  parent: { _id: string };
-  sortOrder: number;
-  title: string;
-}

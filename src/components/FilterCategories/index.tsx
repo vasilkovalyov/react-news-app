@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { FilterCategoriesProps } from './FilterCategories.type';
 
 import FilterCategoryGroup from '../FilterCategoryGroup';
 import { FilterCategoryType } from '../FilterCategoryGroup/FilterCategoryGroup.type';
 
 import { DynamicObjectType } from '../../utils/types';
+import { useFilterCategories } from './useFilterCategories';
 
 export function convertCategoryObjects(
   categories: FilterCategoryType[]
@@ -21,36 +22,16 @@ function FilterCategories({
   selectedCategories,
   onSelectCategories,
 }: FilterCategoriesProps) {
-  const [selectedCategoriesMap, setSelectedCategoriesMap] = useState<
-    FilterCategoryType[] | []
-  >([]);
-
-  useEffect(() => {
-    setSelectedCategoriesMap(selectedCategories || []);
-  }, [selectedCategories]);
+  const [filterAdd, filterRemove] = useFilterCategories(
+    selectedCategories || []
+  );
 
   function handleChangeFilterAdd(categories: FilterCategoryType[]) {
-    let updatedCategories: FilterCategoryType[] = [];
-    updatedCategories = Array.from([
-      ...new Map(
-        [...selectedCategoriesMap, ...categories].map((item) => [
-          item.title,
-          item,
-        ])
-      ).values(),
-    ]);
-
-    setSelectedCategoriesMap(updatedCategories);
-    onSelectCategories(updatedCategories);
+    onSelectCategories(filterAdd(categories));
   }
-  function handleChangeFilterRemove(clickedCategory: FilterCategoryType) {
-    let updatedCategories: FilterCategoryType[] = [];
-    updatedCategories = selectedCategoriesMap.filter(
-      (category) => category.title !== clickedCategory.title
-    );
 
-    setSelectedCategoriesMap(updatedCategories);
-    onSelectCategories(updatedCategories);
+  function handleChangeFilterRemove(clickedCategory: FilterCategoryType) {
+    onSelectCategories(filterRemove(clickedCategory));
   }
 
   return (

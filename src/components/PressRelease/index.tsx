@@ -106,6 +106,7 @@ function PressRelease() {
 
   useEffect(() => {
     getParamsFromUrlAndSetToFilters();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -114,6 +115,7 @@ function PressRelease() {
     } else {
       setNews(dataNews.data.contents);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue]);
 
   return (
