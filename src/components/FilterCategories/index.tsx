@@ -3,19 +3,8 @@ import { FilterCategoriesProps } from './FilterCategories.type';
 
 import FilterCategoryGroup from '../FilterCategoryGroup';
 import { FilterCategoryType } from '../FilterCategoryGroup/FilterCategoryGroup.type';
-
-import { DynamicObjectType } from '../../utils/types';
 import { useFilterCategories } from './useFilterCategories';
-
-export function convertCategoryObjects(
-  categories: FilterCategoryType[]
-): DynamicObjectType {
-  const categoriesMap: DynamicObjectType = {};
-  for (const category of categories) {
-    categoriesMap[category.title] = category._id;
-  }
-  return categoriesMap;
-}
+import { convertCategoryObjects } from './utils'
 
 function FilterCategories({
   categories,
@@ -33,7 +22,6 @@ function FilterCategories({
   function handleChangeFilterRemove(clickedCategory: FilterCategoryType) {
     onSelectCategories(filterRemove(clickedCategory));
   }
-
   return (
     <div className="filters">
       <div className="filters__content">
