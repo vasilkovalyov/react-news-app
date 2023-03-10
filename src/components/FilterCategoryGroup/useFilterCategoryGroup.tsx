@@ -5,24 +5,25 @@ import {
   FilterCategoryWithCountType,
 } from './FilterCategoryGroup.type';
 
-function objectToArray(
-  obj: { [key: string]: string },
-  category: string
-): FilterCategoryType[] | [] {
-  if (!Object.keys(obj).length) return [];
+import { objectToArray } from './utils';
 
-  const array: FilterCategoryType[] = [];
-  for (const key in obj) {
-    const item = {
-      _id: obj[key],
-      title: key,
-      category: category,
-    };
-    array.push(item);
-  }
-
-  return array;
-}
+const objectCategories: DynamicObjectType = {
+  Rum: '8f370a189b48e145ae65cf6d',
+  'Scotch Whisky': '66797e6d813e9d4c8f85cf79',
+};
+const expectedResult = [
+  {
+    category: 'drinks',
+    title: 'Rum',
+    _id: '8f370a189b48e145ae65cf6d',
+  },
+  {
+    category: 'drinks',
+    title: 'Scotch Whisky',
+    _id: '66797e6d813e9d4c8f85cf79',
+  },
+];
+console.log(objectToArray(objectCategories, 'drinks') === expectedResult);
 
 export function useFilterCategoryGroup(
   categoryName: string,

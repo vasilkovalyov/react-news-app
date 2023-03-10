@@ -79,7 +79,6 @@ function PressRelease() {
   function onHandleChangeFilterTags(categoryId: string) {
     const updatedTags = tags.filter((tag) => tag._id !== categoryId);
     setTags(updatedTags);
-
     const urlWithParams = setUrlParams(categoriesToObject(updatedTags));
     replaceUrlState(urlWithParams);
   }
@@ -94,12 +93,10 @@ function PressRelease() {
   function getParamsFromUrlAndSetToFilters() {
     if (typeof window !== 'undefined') {
       const urlParams = getParamsFromUrl(window.location.search);
-      console.time('s');
       const categories = getFilterCategoriesFromParsedUrlParams(
         filterCategories,
         urlParams
       );
-      console.timeEnd('s');
       setTags(categories);
     }
   }

@@ -5,14 +5,14 @@ import {
   FilterCategory,
 } from '../components/FilterCategoryGroup/FilterCategoryGroup.type';
 
-export const getUniqCategoriesWithCount = (
+export function getUniqCategoriesWithCount(
   posts: NewsCardProps[],
   categoriesIds: {
     regions: string;
     topics: string;
     drinks: string;
   }
-): { [key: string]: FilterCategoryWithCountType[] } => {
+): { [key: string]: FilterCategoryWithCountType[] | [] } {
   const years: {
     [key: string]: {
       _id: string;
@@ -37,6 +37,14 @@ export const getUniqCategoriesWithCount = (
       count: number;
     };
   } = {};
+
+  if (!posts.length)
+    return {
+      years: [],
+      regions: [],
+      topics: [],
+      drinks: [],
+    };
 
   for (const post of posts) {
     const yearKey = new Date(post.articleDate).getFullYear();
@@ -104,14 +112,15 @@ export const getUniqCategoriesWithCount = (
   objResult['drinks'] = getCategoriesWithCounters(drinks);
 
   return objResult;
-};
+}
 
-export const getCategoriesWithCounters = (categories: {
+export function getCategoriesWithCounters(categories: {
   [key: string]: {
     _id: string;
     count: number;
   };
-}): FilterCategoryWithCountType[] => {
+}): FilterCategoryWithCountType[] {
+  if (!Object.keys(categories).length) return [];
   return Object.keys(categories).map((category) => {
     return {
       _id: categories[category]._id,
@@ -119,9 +128,10 @@ export const getCategoriesWithCounters = (categories: {
       count: categories[category].count,
     };
   });
-};
+}
 
 export function getParamsFromUrl(url: string): { [key: string]: string[] } {
+  if (!url.length) return {};
   const urlParams = new URLSearchParams(url);
   const params = Object.fromEntries(urlParams.entries());
   const paramsResult: { [key: string]: string[] } = {};
@@ -133,7 +143,7 @@ export function getParamsFromUrl(url: string): { [key: string]: string[] } {
   return paramsResult;
 }
 
-export function setUrlParams(params: { [key: string]: [string] }) {
+export function setUrlParams(params: { [key: string]: string[] }): string {
   const urlParams = new URLSearchParams();
 
   for (const filterKey in params) {
